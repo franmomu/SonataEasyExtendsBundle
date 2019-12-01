@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Sonata\EasyExtendsBundle\Mapper;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 final class DoctrineORMMapper implements EventSubscriber
@@ -146,9 +146,6 @@ final class DoctrineORMMapper implements EventSubscriber
         $this->uniques[$class][$name] = $columns;
     }
 
-    /**
-     * Adds new ORM override.
-     */
     public function addOverride(string $class, string $type, array $options): void
     {
         if (!isset($this->overrides[$class])) {
@@ -203,6 +200,7 @@ final class DoctrineORMMapper implements EventSubscriber
 
     /**
      * @throws \RuntimeException
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     private function loadDiscriminatorColumns(ClassMetadataInfo $metadata): void
     {
@@ -232,6 +230,7 @@ final class DoctrineORMMapper implements EventSubscriber
 
     /**
      * @throws \RuntimeException
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     private function loadInheritanceTypes(ClassMetadataInfo $metadata): void
     {
