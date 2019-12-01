@@ -14,27 +14,56 @@ declare(strict_types=1);
 namespace Sonata\EasyExtendsBundle\Command;
 
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Sonata\EasyExtendsBundle\Generator\GeneratorInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * Generate Application entities from bundle entities.
  *
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class GenerateCommand extends ContainerAwareCommand
+final class GenerateCommand extends Command
 {
+    protected static $defaultName = 'sonata:easy-extends:generate';
+
+    private $kernel;
+    private $generatorBundle;
+    private $generatorOrm;
+    private $generatorOdm;
+    private $generatorPhpcr;
+    private $generatorSerializer;
+
+    public function __construct(
+        KernelInterface $kernel,
+        GeneratorInterface $generatorBundle,
+        GeneratorInterface $generatorOrm,
+        GeneratorInterface $generatorOdm,
+        GeneratorInterface $generatorPhpcr,
+        GeneratorInterface $generatorSerializer
+    ) {
+        $this->kernel = $kernel;
+        $this->generatorBundle = $generatorBundle;
+        $this->generatorOrm = $generatorOrm;
+        $this->generatorOdm = $generatorOdm;
+        $this->generatorPhpcr = $generatorPhpcr;
+        $this->generatorSerializer = $generatorSerializer;
+
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function configure(): void
     {
         $this
-            ->setName('sonata:easy-extends:generate')
             ->setHelp(<<<'EOT'
 The <info>easy-extends:generate:entities</info> command generating a valid bundle structure from a Vendor Bundle.
 
@@ -71,7 +100,7 @@ EOT
                 ));
             }
         } else {
-            $dest = $this->getContainer()->get('kernel')->getRootDir();
+            $dest = $this->kernel->getProjectDir();
         }
 
         $namespace = $input->getOption('namespace');
@@ -109,7 +138,7 @@ EOT
             $output->writeln('');
             $output->writeln('  Bundles availables :');
             /** @var BundleInterface $bundle */
-            foreach ($this->getContainer()->get('kernel')->getBundles() as $bundle) {
+            foreach ($this->kernel->getBundles() as $bundle) {
                 $bundleMetadata = new BundleMetadata($bundle, $configuration);
 
                 if (!$bundleMetadata->isExtendable()) {
@@ -145,8 +174,7 @@ EOT
     {
         $processed = false;
 
-        /** @var BundleInterface $bundle */
-        foreach ($this->getContainer()->get('kernel')->getBundles() as $bundle) {
+        foreach ($this->kernel->getBundles() as $bundle) {
             if ($bundle->getName() !== $bundleName) {
                 continue;
             }
@@ -173,24 +201,19 @@ EOT
 
             $output->writeln(sprintf('Processing bundle : "<info>%s</info>"', $bundleMetadata->getName()));
 
-            $this->getContainer()->get('sonata.easy_extends.generator.bundle')
-                ->generate($output, $bundleMetadata);
+            $this->generatorBundle->generate($output, $bundleMetadata);
 
             $output->writeln(sprintf('Processing Doctrine ORM : "<info>%s</info>"', $bundleMetadata->getName()));
-            $this->getContainer()->get('sonata.easy_extends.generator.orm')
-                ->generate($output, $bundleMetadata);
+            $this->generatorOrm->generate($output, $bundleMetadata);
 
             $output->writeln(sprintf('Processing Doctrine ODM : "<info>%s</info>"', $bundleMetadata->getName()));
-            $this->getContainer()->get('sonata.easy_extends.generator.odm')
-                ->generate($output, $bundleMetadata);
+            $this->generatorOdm->generate($output, $bundleMetadata);
 
             $output->writeln(sprintf('Processing Doctrine PHPCR : "<info>%s</info>"', $bundleMetadata->getName()));
-            $this->getContainer()->get('sonata.easy_extends.generator.phpcr')
-                ->generate($output, $bundleMetadata);
+            $this->generatorPhpcr->generate($output, $bundleMetadata);
 
             $output->writeln(sprintf('Processing Serializer config : "<info>%s</info>"', $bundleMetadata->getName()));
-            $this->getContainer()->get('sonata.easy_extends.generator.serializer')
-                ->generate($output, $bundleMetadata);
+            $this->generatorSerializer->generate($output, $bundleMetadata);
 
             $output->writeln('');
         }

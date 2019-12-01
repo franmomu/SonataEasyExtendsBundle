@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Sonata\EasyExtendsBundle\Command;
 
 use Doctrine\ORM\Tools\Export\ClassMetadataExporter;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,14 +25,24 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class DumpMappingCommand extends ContainerAwareCommand
+final class DumpMappingCommand extends Command
 {
+    protected static $defaultName = 'sonata:easy-extends:dump-mapping';
+
+    private $registry;
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        $this->registry = $registry;
+
+        parent::__construct();
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function configure(): void
     {
-        $this->setName('sonata:easy-extends:dump-mapping');
         $this->setDescription('Dump some mapping information (debug only)');
 
         $this->addArgument('manager', InputArgument::OPTIONAL, 'The manager name to use');
@@ -43,8 +54,7 @@ class DumpMappingCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $factory = $this->getContainer()
-            ->get('doctrine')
+        $factory = $this->registry
             ->getManager($input->getArgument('manager'))
             ->getMetadataFactory();
 

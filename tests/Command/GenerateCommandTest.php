@@ -18,7 +18,7 @@ use Sonata\AcmeBundle\SonataAcmeBundle;
 use Sonata\EasyExtendsBundle\Command\GenerateCommand;
 use Sonata\EasyExtendsBundle\Generator\GeneratorInterface;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -31,7 +31,7 @@ final class GenerateCommandTest extends TestCase
      */
     public function testExecute($args): void
     {
-        $commandTester = $this->buildCommand($this->mockContainer());
+        $commandTester = $this->buildCommand();
         $commandTester->execute($args);
 
         $this->assertStringContainsString(
@@ -76,7 +76,7 @@ final class GenerateCommandTest extends TestCase
 
     public function testExecuteWrongDest(): void
     {
-        $commandTester = $this->buildCommand($this->createMock(ContainerInterface::class));
+        $commandTester = $this->buildCommandToFail();
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("The provided destination folder 'fakedest' does not exist!");
@@ -88,7 +88,7 @@ final class GenerateCommandTest extends TestCase
 
     public function testNoArgument(): void
     {
-        $commandTester = $this->buildCommand($this->mockContainerWithKernel());
+        $commandTester = $this->buildCommandToFail();
 
         $commandTester->execute([
             '--dest' => 'src',
@@ -102,7 +102,7 @@ final class GenerateCommandTest extends TestCase
 
     public function testFakeBundleName(): void
     {
-        $commandTester = $this->buildCommand($this->mockContainerWithKernel());
+        $commandTester = $this->buildCommandToFail();
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage("The bundle 'FakeBundle' does not exist or is not registered in the kernel!");
@@ -120,7 +120,7 @@ final class GenerateCommandTest extends TestCase
 
     public function testNotExtendableBundle(): void
     {
-        $commandTester = $this->buildCommand($this->mockContainerWithKernel(new \Symfony\Bundle\NotExtendableBundle()));
+        $commandTester = $this->buildCommandToFail(new \Symfony\Bundle\NotExtendableBundle());
 
         $commandTester->execute([
             '--dest' => 'src',
@@ -135,9 +135,7 @@ final class GenerateCommandTest extends TestCase
 
     public function testInvalidFolderStructure(): void
     {
-        $commandTester = $this->buildCommand(
-            $this->mockContainerWithKernel(new \Application\Sonata\NotExtendableBundle())
-        );
+        $commandTester = $this->buildCommandToFail(new \Application\Sonata\NotExtendableBundle());
 
         $commandTester->execute([
             '--dest' => 'src',
@@ -150,45 +148,52 @@ final class GenerateCommandTest extends TestCase
         );
     }
 
-    private function buildCommand($container)
+    private function buildCommand(BundleInterface $kernelReturnValue = null): CommandTester
     {
-        $command = new GenerateCommand();
-        $command->setContainer($container);
+        $kernel = $this->mockKernel($kernelReturnValue);
+
+        $command = new GenerateCommand(
+            $kernel,
+            $this->mockGenerator(),
+            $this->mockGenerator(),
+            $this->mockGenerator(),
+            $this->mockGenerator(),
+            $this->mockGenerator()
+        );
 
         return new CommandTester($command);
     }
 
-    private function mockContainer()
+    private function buildCommandToFail(BundleInterface $kernelReturnValue = null): CommandTester
     {
-        $containerMock = $this->mockContainerWithKernel();
+        $kernel = $this->createMock(KernelInterface::class);
 
-        $containerMock->expects($this->exactly(6))
-            ->method('get')
-            ->willReturn($this->mockGenerator());
+        $kernel
+            ->method('getBundles')
+            ->willReturn([
+                $kernelReturnValue ?: new SonataAcmeBundle(),
+            ]);
 
-        return $containerMock;
+        $command = new GenerateCommand(
+            $kernel,
+            $this->createMock(GeneratorInterface::class),
+            $this->createMock(GeneratorInterface::class),
+            $this->createMock(GeneratorInterface::class),
+            $this->createMock(GeneratorInterface::class),
+            $this->createMock(GeneratorInterface::class)
+        );
+
+        return new CommandTester($command);
     }
 
-    private function mockContainerWithKernel($kernelReturnValue = null)
-    {
-        $containerMock = $this->createMock(ContainerInterface::class);
-
-        $containerMock->expects($this->at(0))
-            ->method('get')
-            ->with('kernel')
-            ->willReturn($this->mockKernel($kernelReturnValue));
-
-        return $containerMock;
-    }
-
-    private function mockKernel($returnValue)
+    private function mockKernel(?BundleInterface $kernelReturnValue)
     {
         $kernelMock = $this->createMock(KernelInterface::class);
 
         $kernelMock->expects($this->once())
             ->method('getBundles')
             ->willReturn([
-                $returnValue ?: new SonataAcmeBundle(),
+                $kernelReturnValue ?: new SonataAcmeBundle(),
             ]);
 
         return $kernelMock;
@@ -198,7 +203,7 @@ final class GenerateCommandTest extends TestCase
     {
         $generatorMock = $this->createMock(GeneratorInterface::class);
 
-        $generatorMock->expects($this->exactly(5))
+        $generatorMock->expects($this->once())
             ->method('generate');
 
         return $generatorMock;
