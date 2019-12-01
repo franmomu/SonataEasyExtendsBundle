@@ -66,7 +66,7 @@ final class GenerateCommand extends Command
             ->setHelp(<<<'EOT'
 The <info>easy-extends:generate:entities</info> command generating a valid bundle structure from a Vendor Bundle.
 
-  <info>ie: ./app/console sonata:easy-extends:generate SonataUserBundle</info>
+  <info>ie: ./bin/console sonata:easy-extends:generate SonataUserBundle</info>
 EOT
             );
 
@@ -99,7 +99,7 @@ EOT
                 ));
             }
         } else {
-            $dest = $this->kernel->getProjectDir();
+            $dest = $this->kernel->getProjectDir() . '/src';
         }
 
         $namespace = $input->getOption('namespace');
