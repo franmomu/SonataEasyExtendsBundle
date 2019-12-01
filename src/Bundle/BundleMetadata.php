@@ -15,62 +15,62 @@ namespace Sonata\EasyExtendsBundle\Bundle;
 
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
-class BundleMetadata
+final class BundleMetadata
 {
     /**
      * @var BundleInterface
      */
-    protected $bundle;
+    private $bundle;
 
     /**
      * @var string
      */
-    protected $vendor;
+    private $vendor;
 
     /**
      * @var bool
      */
-    protected $valid = false;
+    private $valid = false;
 
     /**
      * @var string
      */
-    protected $namespace;
+    private $namespace;
 
     /**
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string
      */
-    protected $extendedDirectory;
+    private $extendedDirectory;
 
     /**
      * @var string
      */
-    protected $extendedNamespace;
+    private $extendedNamespace;
 
     /**
      * @var array
      */
-    protected $configuration = [];
+    private $configuration = [];
 
     /**
      * @var OrmMetadata
      */
-    protected $ormMetadata;
+    private $ormMetadata;
 
     /**
      * @var OdmMetadata
      */
-    protected $odmMetadata;
+    private $odmMetadata;
 
     /**
      * @var PhpcrMetadata
      */
-    protected $phpcrMetadata;
+    private $phpcrMetadata;
 
     /**
      * @var string
@@ -134,10 +134,7 @@ class BundleMetadata
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getApplication()
+    public function getApplication(): string
     {
         return $this->application;
     }
@@ -169,7 +166,7 @@ class BundleMetadata
      * if the bundle does not respect this convention then the easy extends command will ignore
      * this bundle
      */
-    protected function buildInformation(): void
+    private function buildInformation(): void
     {
         $information = explode('\\', $this->getClass());
 

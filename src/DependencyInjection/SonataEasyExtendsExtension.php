@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  *
  * @author     Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class SonataEasyExtendsExtension extends Extension
+final class SonataEasyExtendsExtension extends Extension
 {
     /**
      * {@inheritdoc}

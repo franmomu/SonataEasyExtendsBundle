@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Application\Sonata;
 
-class NotExtendableBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+final class NotExtendableBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 }

@@ -16,17 +16,17 @@ namespace Sonata\EasyExtendsBundle\Generator;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SerializerGenerator implements GeneratorInterface
+final class SerializerGenerator implements GeneratorInterface
 {
     /**
      * @var string
      */
-    protected $entitySerializerTemplate;
+    private $entitySerializerTemplate;
 
     /**
      * @var string
      */
-    protected $documentSerializerTemplate;
+    private $documentSerializerTemplate;
 
     public function __construct()
     {
@@ -48,7 +48,7 @@ class SerializerGenerator implements GeneratorInterface
         $this->generatePhpcrSerializer($output, $bundleMetadata);
     }
 
-    protected function generateOrmSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
+    private function generateOrmSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $names = $bundleMetadata->getOrmMetadata()->getEntityNames();
 
@@ -67,7 +67,7 @@ class SerializerGenerator implements GeneratorInterface
         }
     }
 
-    protected function generateOdmSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
+    private function generateOdmSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $names = $bundleMetadata->getOdmMetadata()->getDocumentNames();
 
@@ -92,7 +92,7 @@ class SerializerGenerator implements GeneratorInterface
         }
     }
 
-    protected function generatePhpcrSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
+    private function generatePhpcrSerializer(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $names = $bundleMetadata->getPhpcrMetadata()->getDocumentNames();
 
@@ -117,7 +117,7 @@ class SerializerGenerator implements GeneratorInterface
         }
     }
 
-    protected function writeSerializerFile(OutputInterface $output, BundleMetadata $bundleMetadata, string $template, string $destFile, string $name): void
+    private function writeSerializerFile(OutputInterface $output, BundleMetadata $bundleMetadata, string $template, string $destFile, string $name): void
     {
         if (is_file($destFile)) {
             $output->writeln(sprintf('   ~ <info>%s</info>', $name));

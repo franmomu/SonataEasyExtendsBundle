@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class AddMapperInformationCompilerPass implements CompilerPassInterface
+final class AddMapperInformationCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}

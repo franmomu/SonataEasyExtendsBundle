@@ -16,17 +16,17 @@ namespace Sonata\EasyExtendsBundle\Generator;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class OdmGenerator implements GeneratorInterface
+final class OdmGenerator implements GeneratorInterface
 {
     /**
      * @var string
      */
-    protected $documentTemplate;
+    private $documentTemplate;
 
     /**
      * @var string
      */
-    protected $documentRepositoryTemplate;
+    private $documentRepositoryTemplate;
 
     public function __construct()
     {
@@ -54,7 +54,7 @@ class OdmGenerator implements GeneratorInterface
         return $this->documentRepositoryTemplate;
     }
 
-    protected function generateMappingDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
+    private function generateMappingDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $output->writeln(' - Copy document files');
 
@@ -91,7 +91,7 @@ class OdmGenerator implements GeneratorInterface
         }
     }
 
-    protected function generateDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
+    private function generateDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
     {
         $output->writeln(' - Generating document files');
 
@@ -132,7 +132,7 @@ class OdmGenerator implements GeneratorInterface
         }
     }
 
-    protected function generateDocumentRepositoryFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
+    private function generateDocumentRepositoryFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
     {
         $output->writeln(' - Generating document repository files');
 

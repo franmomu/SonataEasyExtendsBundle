@@ -36,7 +36,7 @@ final class DumpMappingCommandTest extends KernelTestCase
         $this->assertStringContainsString('Block', $output);
     }
 
-    protected static function getKernelClass()
+    protected static function getKernelClass(): string
     {
         return AppKernel::class;
     }

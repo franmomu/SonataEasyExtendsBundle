@@ -16,22 +16,22 @@ namespace Sonata\EasyExtendsBundle\Generator;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PHPCRGenerator implements GeneratorInterface
+final class PHPCRGenerator implements GeneratorInterface
 {
     /**
      * @var string
      */
-    protected $DocumentTemplate;
+    private $documentTemplate;
 
     /**
      * @var string
      */
-    protected $DocumentRepositoryTemplate;
+    private $documentRepositoryTemplate;
 
     public function __construct()
     {
-        $this->DocumentTemplate = (string) file_get_contents(__DIR__.'/../Resources/skeleton/phpcr/document.mustache');
-        $this->DocumentRepositoryTemplate = (string) file_get_contents(
+        $this->documentTemplate = (string) file_get_contents(__DIR__.'/../Resources/skeleton/phpcr/document.mustache');
+        $this->documentRepositoryTemplate = (string) file_get_contents(
             __DIR__.'/../Resources/skeleton/phpcr/repository.mustache'
         );
     }
@@ -177,11 +177,11 @@ class PHPCRGenerator implements GeneratorInterface
 
     public function getDocumentTemplate(): string
     {
-        return $this->DocumentTemplate;
+        return $this->documentTemplate;
     }
 
     public function getDocumentRepositoryTemplate(): string
     {
-        return $this->DocumentRepositoryTemplate;
+        return $this->documentRepositoryTemplate;
     }
 }

@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use PHPUnit\Framework\TestCase;
 use Sonata\EasyExtendsBundle\Mapper\DoctrineORMMapper;
 
-class DoctrineORMMapperTest extends TestCase
+final class DoctrineORMMapperTest extends TestCase
 {
     /**
      * @var ManagerRegistry

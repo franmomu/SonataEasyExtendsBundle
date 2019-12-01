@@ -13,42 +13,42 @@ declare(strict_types=1);
 
 namespace Sonata\EasyExtendsBundle\Mapper;
 
-class DoctrineCollector
+final class DoctrineCollector
 {
     /**
      * @var array
      */
-    protected $associations;
+    private $associations;
 
     /**
      * @var array
      */
-    protected $indexes;
+    private $indexes;
 
     /**
      * @var array
      */
-    protected $uniques;
+    private $uniques;
 
     /**
      * @var array
      */
-    protected $discriminators;
+    private $discriminators;
 
     /**
      * @var array
      */
-    protected $discriminatorColumns;
+    private $discriminatorColumns;
 
     /**
      * @var array
      */
-    protected $inheritanceTypes;
+    private $inheritanceTypes;
 
     /**
      * @var array
      */
-    protected $overrides;
+    private $overrides;
 
     /**
      * @var DoctrineCollector|null
@@ -90,9 +90,6 @@ class DoctrineCollector
         }
     }
 
-    /**
-     * Add the Discriminator Column.
-     */
     public function addDiscriminatorColumn(string $class, array $columnDef): void
     {
         if (!isset($this->discriminatorColumns[$class])) {
@@ -146,10 +143,7 @@ class DoctrineCollector
         $this->uniques[$class][$name] = $columns;
     }
 
-    /**
-     * Adds new override.
-     */
-    final public function addOverride(string $class, string $type, array $options): void
+    public function addOverride(string $class, string $type, array $options): void
     {
         if (!isset($this->overrides[$class])) {
             $this->overrides[$class] = [];
@@ -195,7 +189,7 @@ class DoctrineCollector
     /**
      * Get all overrides.
      */
-    final public function getOverrides(): array
+    public function getOverrides(): array
     {
         return $this->overrides;
     }

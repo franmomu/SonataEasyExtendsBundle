@@ -18,47 +18,47 @@ use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class DoctrineORMMapper implements EventSubscriber
+final class DoctrineORMMapper implements EventSubscriber
 {
     /**
      * @var array
      */
-    protected $associations;
+    private $associations;
 
     /**
      * @var array
      */
-    protected $discriminators;
+    private $discriminators;
 
     /**
      * @var array
      */
-    protected $discriminatorColumns;
+    private $discriminatorColumns;
 
     /**
      * @var array
      */
-    protected $inheritanceTypes;
+    private $inheritanceTypes;
 
     /**
      * @var ManagerRegistry
      */
-    protected $doctrine;
+    private $doctrine;
 
     /**
      * @var array
      */
-    protected $indexes;
+    private $indexes;
 
     /**
      * @var array
      */
-    protected $uniques;
+    private $uniques;
 
     /**
      * @var array
      */
-    protected $overrides;
+    private $overrides;
 
     public function __construct(ManagerRegistry $doctrine, array $associations = [], array $indexes = [], array $discriminators = [], array $discriminatorColumns = [], array $inheritanceTypes = [], array $uniques = [], array $overrides = [])
     {
@@ -149,7 +149,7 @@ class DoctrineORMMapper implements EventSubscriber
     /**
      * Adds new ORM override.
      */
-    final public function addOverride(string $class, string $type, array $options): void
+    public function addOverride(string $class, string $type, array $options): void
     {
         if (!isset($this->overrides[$class])) {
             $this->overrides[$class] = [];

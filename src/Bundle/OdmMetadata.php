@@ -15,32 +15,32 @@ namespace Sonata\EasyExtendsBundle\Bundle;
 
 use Symfony\Component\Finder\Finder;
 
-class OdmMetadata
+final class OdmMetadata
 {
     /**
      * @var string
      */
-    protected $mappingDocumentDirectory;
+    private $mappingDocumentDirectory;
 
     /**
      * @var string
      */
-    protected $extendedMappingDocumentDirectory;
+    private $extendedMappingDocumentDirectory;
 
     /**
      * @var string
      */
-    protected $documentDirectory;
+    private $documentDirectory;
 
     /**
      * @var string
      */
-    protected $extendedDocumentDirectory;
+    private $extendedDocumentDirectory;
 
     /**
      * @var string
      */
-    protected $extendedSerializerDirectory;
+    private $extendedSerializerDirectory;
 
     public function __construct(BundleMetadata $bundleMetadata)
     {

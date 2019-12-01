@@ -54,7 +54,6 @@ final class GenerateCommand extends Command
         $this->generatorPhpcr = $generatorPhpcr;
         $this->generatorSerializer = $generatorSerializer;
 
-
         parent::__construct();
     }
 
@@ -170,7 +169,7 @@ EOT
     /**
      * Generates a bundle entities from a bundle name.
      */
-    protected function generate(string $bundleName, array $configuration, OutputInterface $output): bool
+    private function generate(string $bundleName, array $configuration, OutputInterface $output): bool
     {
         $processed = false;
 

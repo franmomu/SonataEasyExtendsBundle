@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sonata\EasyExtendsBundle\Generator;
 
-class Mustache
+final class Mustache
 {
     public static function replace(string $string, array $parameters): string
     {

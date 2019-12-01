@@ -29,7 +29,7 @@ final class GenerateCommandTest extends TestCase
     /**
      * @dataProvider executeData
      */
-    public function testExecute($args): void
+    public function testExecute(array $args): void
     {
         $commandTester = $this->buildCommand();
         $commandTester->execute($args);
@@ -40,7 +40,7 @@ final class GenerateCommandTest extends TestCase
         );
     }
 
-    public function executeData()
+    public function executeData(): array
     {
         return [
             [

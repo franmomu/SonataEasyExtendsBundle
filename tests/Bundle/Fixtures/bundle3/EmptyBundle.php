@@ -11,12 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Sonata\AcmeBundle;
+namespace Sonata\EmptyBundle;
 
-final class SonataAcmeBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+final class SonataEmptyBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-    public function getPath(): string
-    {
-        return __DIR__;
-    }
 }

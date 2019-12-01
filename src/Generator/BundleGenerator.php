@@ -16,12 +16,12 @@ namespace Sonata\EasyExtendsBundle\Generator;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BundleGenerator implements GeneratorInterface
+final class BundleGenerator implements GeneratorInterface
 {
     /**
      * @var string
      */
-    protected $bundleTemplate;
+    private $bundleTemplate;
 
     public function __construct()
     {
@@ -37,7 +37,7 @@ class BundleGenerator implements GeneratorInterface
         $this->generateBundleFile($output, $bundleMetadata);
     }
 
-    protected function generateBundleDirectory(OutputInterface $output, BundleMetadata $bundleMetadata): void
+    private function generateBundleDirectory(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $directories = [
             '',
@@ -62,7 +62,7 @@ class BundleGenerator implements GeneratorInterface
         }
     }
 
-    protected function generateBundleFile(OutputInterface $output, BundleMetadata $bundleMetadata): void
+    private function generateBundleFile(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $application = $bundleMetadata->getApplication();
         $file = sprintf(
@@ -87,7 +87,7 @@ class BundleGenerator implements GeneratorInterface
         file_put_contents($file, $string);
     }
 
-    protected function getBundleTemplate(): string
+    private function getBundleTemplate(): string
     {
         return $this->bundleTemplate;
     }

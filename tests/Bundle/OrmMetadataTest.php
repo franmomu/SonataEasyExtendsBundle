@@ -13,18 +13,26 @@ declare(strict_types=1);
 
 namespace Sonata\EasyExtendsBundle\Tests\Bundle;
 
+// Unfortunately phpunit cannot mock a class in chosen namespace.
+// Therefore mocks are stored in Fixtures/bundle1 directory and required here.
+require_once __DIR__.'/Fixtures/bundle1/SonataAcmeBundle.php';
+require_once __DIR__.'/Fixtures/bundle2/dot.dot/DotBundle.php';
+require_once __DIR__.'/Fixtures/bundle3/EmptyBundle.php';
+
 use PHPUnit\Framework\TestCase;
 use Sonata\AcmeBundle\SonataAcmeBundle;
+use Sonata\DotBundle\SonataDotBundle;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Sonata\EasyExtendsBundle\Bundle\OrmMetadata;
+use Sonata\EmptyBundle\SonataEmptyBundle;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
-class OrmMetadataTest extends TestCase
+final class OrmMetadataTest extends TestCase
 {
     public function testEntityNames(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures/bundle1'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $entityNames = $ormMetadata->getEntityNames();
 
@@ -35,7 +43,7 @@ class OrmMetadataTest extends TestCase
 
     public function testDirectoryWithDotInPath(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures/bundle2/dot.dot'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataDotBundle()));
 
         $entityNames = $ormMetadata->getEntityNames();
 
@@ -49,7 +57,7 @@ class OrmMetadataTest extends TestCase
         $bundlePath = __DIR__.'/Fixtures/bundle1';
         $expectedDirectory = $bundlePath.'/Resources/config/doctrine/';
 
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock($bundlePath));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $directory = $ormMetadata->getMappingEntityDirectory();
 
@@ -58,10 +66,9 @@ class OrmMetadataTest extends TestCase
 
     public function testGetExtendedMappingEntityDirectory(): void
     {
-        $bundlePath = __DIR__.'/Fixtures/bundle1';
         $expectedDirectory = 'Application/Sonata/AcmeBundle/Resources/config/doctrine/';
 
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock($bundlePath));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $directory = $ormMetadata->getExtendedMappingEntityDirectory();
 
@@ -73,7 +80,7 @@ class OrmMetadataTest extends TestCase
         $bundlePath = __DIR__.'/Fixtures/bundle1';
         $expectedDirectory = $bundlePath.'/Entity';
 
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock($bundlePath));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $directory = $ormMetadata->getEntityDirectory();
 
@@ -82,10 +89,9 @@ class OrmMetadataTest extends TestCase
 
     public function testGetExtendedEntityDirectory(): void
     {
-        $bundlePath = __DIR__.'/Fixtures/bundle1';
         $expectedDirectory = 'Application/Sonata/AcmeBundle/Entity';
 
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock($bundlePath));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $directory = $ormMetadata->getExtendedEntityDirectory();
 
@@ -94,10 +100,9 @@ class OrmMetadataTest extends TestCase
 
     public function testGetExtendedSerializerDirectory(): void
     {
-        $bundlePath = __DIR__.'/Fixtures/bundle1';
         $expectedDirectory = 'Application/Sonata/AcmeBundle/Resources/config/serializer';
 
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock($bundlePath));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $directory = $ormMetadata->getExtendedSerializerDirectory();
 
@@ -106,7 +111,7 @@ class OrmMetadataTest extends TestCase
 
     public function testGetEntityMappingFiles(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures/bundle1'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $filterIterator = $ormMetadata->getEntityMappingFiles();
 
@@ -125,7 +130,7 @@ class OrmMetadataTest extends TestCase
 
     public function testGetEntityMappingFilesWithFilesNotFound(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataEmptyBundle()));
 
         $result = $ormMetadata->getEntityMappingFiles();
 
@@ -135,7 +140,7 @@ class OrmMetadataTest extends TestCase
 
     public function testGetRepositoryFiles(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures/bundle1'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataAcmeBundle()));
 
         $filterIterator = $ormMetadata->getRepositoryFiles();
 
@@ -154,7 +159,7 @@ class OrmMetadataTest extends TestCase
 
     public function testGetRepositoryFilesWithFilesNotFound(): void
     {
-        $ormMetadata = new OrmMetadata($this->getBundleMetadataMock(__DIR__.'/Fixtures'));
+        $ormMetadata = new OrmMetadata($this->getBundleMetadata(new SonataEmptyBundle()));
 
         $result = $ormMetadata->getRepositoryFiles();
 
@@ -162,29 +167,12 @@ class OrmMetadataTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    /**
-     * @param string $bundlePath
-     *
-     * @return BundleMetadata
-     */
-    private function getBundleMetadataMock($bundlePath)
+    private function getBundleMetadata(BundleInterface $bundle): BundleMetadata
     {
-        $bundle = $this->createMock(Bundle::class);
-        $bundle
-            ->method('getPath')
-            ->willReturn($bundlePath);
-
-        $bundleMetadata = $this->createMock(BundleMetadata::class);
-        $bundleMetadata
-            ->method('getBundle')
-            ->willReturn($bundle);
-        $bundleMetadata
-            ->method('getClass')
-            ->willReturn(SonataAcmeBundle::class);
-        $bundleMetadata
-            ->method('getExtendedDirectory')
-            ->willReturn('Application/Sonata/AcmeBundle');
-
-        return $bundleMetadata;
+        return new BundleMetadata($bundle, [
+            'application_dir' => 'Application/:vendor',
+            'namespace' => 'Application\\:vendor',
+            'namespace_prefix' => '',
+        ]);
     }
 }

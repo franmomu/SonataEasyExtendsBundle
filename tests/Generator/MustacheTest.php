@@ -16,7 +16,7 @@ namespace Sonata\EasyExtendsBundle\Tests\Generator;
 use PHPUnit\Framework\TestCase;
 use Sonata\EasyExtendsBundle\Generator\Mustache;
 
-class MustacheTest extends TestCase
+final class MustacheTest extends TestCase
 {
     public function testMustache(): void
     {

@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Sonata\Bundle\AcmeBundle;
 
-class LongNamespaceBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
+final class LongNamespaceBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 }

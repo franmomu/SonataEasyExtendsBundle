@@ -16,17 +16,17 @@ namespace Sonata\EasyExtendsBundle\Generator;
 use Sonata\EasyExtendsBundle\Bundle\BundleMetadata;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class OrmGenerator implements GeneratorInterface
+final class OrmGenerator implements GeneratorInterface
 {
     /**
      * @var string
      */
-    protected $entityTemplate;
+    private $entityTemplate;
 
     /**
      * @var string
      */
-    protected $entityRepositoryTemplate;
+    private $entityRepositoryTemplate;
 
     public function __construct()
     {
