@@ -91,7 +91,7 @@ final class OdmGenerator implements GeneratorInterface
         }
     }
 
-    private function generateDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
+    private function generateDocumentFiles(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $output->writeln(' - Generating document files');
 
@@ -132,7 +132,7 @@ final class OdmGenerator implements GeneratorInterface
         }
     }
 
-    private function generateDocumentRepositoryFiles(OutputInterface $output, BundleMetadata $bundleMetadata): string
+    private function generateDocumentRepositoryFiles(OutputInterface $output, BundleMetadata $bundleMetadata): void
     {
         $output->writeln(' - Generating document repository files');
 

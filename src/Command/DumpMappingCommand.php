@@ -45,8 +45,8 @@ final class DumpMappingCommand extends Command
     {
         $this->setDescription('Dump some mapping information (debug only)');
 
-        $this->addArgument('manager', InputArgument::OPTIONAL, 'The manager name to use');
-        $this->addArgument('model', InputArgument::OPTIONAL, 'The class to dump');
+        $this->addArgument('manager', InputArgument::OPTIONAL, 'The manager name to use', null);
+        $this->addArgument('model', InputArgument::REQUIRED, 'The class to dump');
     }
 
     /**
